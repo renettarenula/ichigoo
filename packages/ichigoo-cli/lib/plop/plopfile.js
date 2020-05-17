@@ -2,7 +2,7 @@ module.exports = function (plop) {
   plop.addHelper("cwd", (p) => process.cwd());
   // controller generator
   plop.setGenerator("new", {
-    description: "application controller logic",
+    description: "Generate new project",
     prompts: [
       {
         type: "input",
