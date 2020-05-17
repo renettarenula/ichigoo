@@ -1,6 +1,7 @@
 {
   "name": "ichigoo-cli",
   "version": "0.0.0",
+  "preferGlobal": true,
   "description": "CLI for Ichigoo",
   "keywords": [
     "cli",
@@ -8,6 +9,9 @@
     "site",
     "generator"
   ],
+  "bin": {
+    "ichigoo": "./lib/bin/index.js"
+  },
   "author": "renettarenula <ren.aysha@gmail.com>",
   "homepage": "https://github.com/renettarenula/ichigoo#readme",
   "license": "MIT",
@@ -28,5 +32,12 @@
   },
   "bugs": {
     "url": "https://github.com/renettarenula/ichigoo/issues"
+  },
+  "dependencies": {
+    "chalk": "^4.0.0",
+    "commander": "^5.1.0",
+    "ora": "^4.0.4",
+    "plop": "^2.6.0",
+    "resolve-cwd": "^3.0.0"
   }
 }
