@@ -1,0 +1,44 @@
+{
+"name": {{name}},
+"version": "1.0.0",
+"description": "",
+"main": "index.js",
+"dependencies": {
+"@emotion/core": "^10.0.28",
+"@emotion/styled": "^10.0.27",
+"babel-plugin-emotion": "^10.0.33",
+"express": "^4.17.1",
+"react": "^16.13.1",
+"react-dom": "^16.13.1",
+"react-router-dom": "^5.1.2",
+"serve-static": "^1.14.1"
+},
+"devDependencies": {
+"@babel/cli": "^7.8.4",
+"@babel/core": "^7.9.6",
+"@babel/node": "^7.8.7",
+"@babel/plugin-transform-react-jsx": "^7.9.4",
+"@babel/preset-env": "^7.9.6",
+"@babel/preset-es2015": "^7.0.0-beta.53",
+"@babel/preset-react": "^7.9.4",
+"async": "^3.2.0",
+"babel-plugin-jsx-pragmatic": "^1.0.2",
+"babel-plugin-root-import": "^6.5.0",
+"babel-plugin-transform-inline-environment-variables": "^0.4.3",
+"chalk": "^4.0.0",
+"glob": "^7.1.6",
+"ora": "^4.0.4",
+"parcel-bundler": "^1.12.4"
+},
+"scripts": {
+"start": "parcel ops/dev/index.html",
+"build": "parcel build ops/dev/index.html",
+"bundle-ops": "NODE_ENV=production babel-node ops/bundler.js",
+"start-ops": "NODE_ENV=development babel-node ops/command/develop.js",
+"serve": "node server.js",
+"bundle": "NODE_ENV=production babel-node bundle.js",
+"test": "echo \"Error: no test specified\" && exit 1"
+},
+"author": "",
+"license": "ISC"
+}

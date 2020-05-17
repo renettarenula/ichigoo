@@ -1,0 +1,32 @@
+{
+  "name": "ichigoo-cli",
+  "version": "0.1.0",
+  "description": "CLI for Ichigoo",
+  "keywords": [
+    "cli",
+    "static",
+    "site",
+    "generator"
+  ],
+  "author": "renettarenula <ren.aysha@gmail.com>",
+  "homepage": "https://github.com/renettarenula/ichigoo#readme",
+  "license": "MIT",
+  "main": "lib/index.js",
+  "directories": {
+    "lib": "lib",
+    "test": "__tests__"
+  },
+  "files": [
+    "lib"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/renettarenula/ichigoo.git"
+  },
+  "scripts": {
+    "test": "echo \"Error: run tests from root\" && exit 1"
+  },
+  "bugs": {
+    "url": "https://github.com/renettarenula/ichigoo/issues"
+  }
+}

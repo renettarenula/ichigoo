@@ -1,0 +1,46 @@
+{
+  "name": "ichigoo",
+  "version": "0.1.0",
+  "description": "Static site generator with React and GraphQL",
+  "keywords": [
+    "React",
+    "GraphQL",
+    "Static",
+    "site",
+    "generator",
+    "cli"
+  ],
+  "author": "renettarenula <ren.aysha@gmail.com>",
+  "homepage": "https://github.com/renettarenula/ichigoo#readme",
+  "license": "MIT",
+  "main": "lib/index.js",
+  "directories": {
+    "lib": "lib",
+    "test": "__tests__"
+  },
+  "files": [
+    "lib"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/renettarenula/ichigoo.git"
+  },
+  "scripts": {
+    "test": "echo \"Error: run tests from root\" && exit 1",
+    "plop": "node ./lib/command/new.js"
+  },
+  "bugs": {
+    "url": "https://github.com/renettarenula/ichigoo/issues"
+  },
+  "dependencies": {
+    "parcel-bundler": "^1.12.4",
+    "plop": "^2.6.0"
+  },
+  "devDependencies": {
+    "@babel/cli": "^7.8.4",
+    "@babel/core": "^7.9.6",
+    "@babel/node": "^7.8.7",
+    "@babel/preset-env": "^7.9.6",
+    "@babel/preset-react": "^7.9.4"
+  }
+}
