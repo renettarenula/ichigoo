@@ -33,6 +33,7 @@
     "url": "https://github.com/renettarenula/ichigoo/issues"
   },
   "dependencies": {
+    "ichigoo-cli": "^0.0.0",
     "parcel-bundler": "^1.12.4",
     "plop": "^2.6.0"
   },
