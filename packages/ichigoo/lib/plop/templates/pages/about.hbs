@@ -1,0 +1,26 @@
+// src/pages/about.js
+import React from 'react'
+import Layout from '../components/Layout'
+
+const About = () => {
+  return (
+    <Layout>
+      <h1>About</h1>
+
+      <p>
+        This is an about me page. You can see a secret by clicking on this{' '}
+        <a
+          href="#"
+          onClick={() => {
+            alert('Hello World!')
+          }}
+        >
+          link
+        </a>
+        !
+      </p>
+    </Layout>
+  )
+}
+
+export default About
