@@ -3,15 +3,18 @@ console.log("Hello, world!");
 
 var program = require("commander");
 var resolveCwd = require("resolve-cwd");
-var path = require("path");
-var command = require("../plop/command.js");
 
 program
-  .command("test")
-  .description("To test if we have access to Ichigoo command folder")
+  .command("develop")
+  .description("Start a development server")
   .action(function () {
-    console.log("this is run using babel");
-    console.log(resolveCwd.silent("ichigoo/lib/command/new.js"));
+    const cmdPath = resolveCwd.silent("ichigoo/lib/command/develop.js");
+
+    if (cmdPath) {
+      process.env.NODE_ENV = "development";
+      const develop = require(cmdPath);
+      develop();
+    }
   });
 
 program.parse(process.argv);

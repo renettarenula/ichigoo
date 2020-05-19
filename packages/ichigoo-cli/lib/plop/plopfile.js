@@ -23,11 +23,6 @@ module.exports = function (plop) {
       },
       {
         type: "add",
-        path: "{{cwd}}/{{name}}/routes.js",
-        templateFile: "templates/routes.hbs",
-      },
-      {
-        type: "add",
         path: "{{cwd}}/{{name}}/src/components/Layout.js",
         templateFile: "templates/components/layout.hbs",
       },
@@ -45,6 +40,11 @@ module.exports = function (plop) {
         type: "add",
         path: "{{cwd}}/{{name}}/src/pages/Speaking.js",
         templateFile: "templates/pages/speaking.hbs",
+      },
+      {
+        type: "add",
+        path: "{{cwd}}/{{name}}/src/App.js",
+        templateFile: "templates/app.hbs",
       },
     ],
   });
