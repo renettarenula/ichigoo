@@ -1,20 +1,21 @@
 import React from "react";
-import { Router } from "@reach/router";
-import Layout from "./components/Layout";
-import About from "./pages/About";
-import Index from "./pages/Index";
-import Speaking from "./pages/Speaking";
+import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
+import routing from "../routes.js";
 
-const App = () => {
+const Routes = ({ routes }) => {
+  const routeComponents = routes.map(({ path, component }, key) => (
+    <Route exact path={path} component={component} key={key} />
+  ));
+
   return (
     <Router>
-      <Layout path="/">
-        <Index path="/"></Index>
-        <About path="about"></About>
-        <Speaking path="speaking"></Speaking>
-      </Layout>
+      <Switch>{routeComponents}</Switch>
     </Router>
   );
+};
+
+const App = () => {
+  return <Routes routes={routing} />;
 };
 
 export default App;
