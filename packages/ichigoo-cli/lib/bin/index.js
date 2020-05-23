@@ -7,10 +7,8 @@ var path = require("path");
 var command = require("../plop/command.js");
 
 program
-  .command("new") // sub-command name
-  .description("Generate a new Ichigoo project") // command description
-
-  // function to execute when command is uses
+  .command("new")
+  .description("Generate a new Ichigoo project")
   .action(function () {
     command();
   });
@@ -25,6 +23,18 @@ program
       process.env.NODE_ENV = "development";
       const develop = require(cmdPath);
       develop();
+    }
+  });
+
+program
+  .command("build")
+  .description("Start building the static site for production")
+  .action(function () {
+    const cmdPath = resolveCwd.silent("ichigoo/lib/command/build.js");
+    if (cmdPath) {
+      process.env.NODE_ENV = "development";
+      const build = require(cmdPath);
+      build();
     }
   });
 
