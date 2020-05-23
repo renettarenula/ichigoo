@@ -32,7 +32,7 @@ program
   .action(function () {
     const cmdPath = resolveCwd.silent("ichigoo/lib/command/build.js");
     if (cmdPath) {
-      process.env.NODE_ENV = "development";
+      process.env.NODE_ENV = "production";
       const build = require(cmdPath);
       build();
     }

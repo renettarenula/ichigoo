@@ -1,4 +1,5 @@
 const path = require("path");
+const chalk = require("chalk");
 
 const dir = () => {
   return path.resolve(".");
@@ -17,8 +18,17 @@ const timeout = (fn, ms) => {
   );
 };
 
+const spinUtil = (spinner, err, options) => {
+  const spinType = err ? "fail" : "succeed";
+  const message = err
+    ? chalk.red.bold(options.error)
+    : chalk.green.bold(options.success);
+  return spinner[spinType](message);
+};
+
 module.exports = {
   dir,
   promiseResolver,
   timeout,
+  spinUtil,
 };
