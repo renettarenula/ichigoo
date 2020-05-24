@@ -1,3 +1,7 @@
+/**
+ * Programatically build a static site with parcel
+ */
+
 const path = require("path");
 const transpile = require("../ops/transpile.js");
 const manifest = require("../ops/manifest.js");
@@ -6,6 +10,27 @@ const chalk = require("chalk");
 const Bundler = require("parcel-bundler");
 const directory = path.resolve(".");
 const utils = require("../ops/utils.js");
+const static = require("../ops/static.js");
+const fs = require("fs");
+
+/**
+ * Generate SSR file and add it to main project
+ */
+const generateSSR = () => {
+  return new Promise((resolve, reject) => {
+    fs.copyFile(
+      path.join(__dirname, `../ops/templates/ssr.js`),
+      path.join(utils.dir(), `src/ssr.js`),
+      (err) => {
+        if (err) {
+          reject(new Error(err));
+        } else {
+          resolve();
+        }
+      }
+    );
+  });
+};
 
 /**
  * Transpile main project and routes so that we can
@@ -13,6 +38,8 @@ const utils = require("../ops/utils.js");
  */
 const transpileSource = async () => {
   const spinner = ora(chalk.grey.bold("Transpiling source files")).start();
+
+  await generateSSR();
 
   await transpile.transformDir(
     path.join(directory, "src"),
@@ -46,6 +73,27 @@ const createManifest = async () => {
 };
 
 /**
+ * Create static HTML files
+ *
+ * @param {*} hashedCollections - Collection of bundled files with hash (e.g about.3453ed.js)
+ */
+const createStatic = async (hashedCollections) => {
+  const spinner = ora(chalk.grey.bold("Generating static files")).start();
+  const [err, data] = await utils.promiseResolver(
+    static.generateStatic(hashedCollections)
+  );
+
+  await utils.timeout(() => {
+    utils.spinUtil(spinner, err, {
+      error: err,
+      success: "Static files successfully generated!",
+    });
+  }, 2000);
+
+  return data;
+};
+
+/**
  * Bundle manifest and create static file
  */
 const runBundle = async () => {
@@ -61,6 +109,17 @@ const runBundle = async () => {
         hashedCollections[asset.entryAsset.basename] = asset.name.match(
           /[^\\/]+$/
         )[0];
+      }
+
+      const data = await createStatic(hashedCollections);
+
+      if (data) {
+        console.log("");
+        for (let [key, value] of Object.entries(data)) {
+          console.log(
+            `${chalk.grey(`dist/`)}${chalk.cyan.bold(`${data[key].name}.html`)}`
+          );
+        }
       }
     });
 

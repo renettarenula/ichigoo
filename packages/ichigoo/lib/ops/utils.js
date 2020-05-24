@@ -26,9 +26,27 @@ const spinUtil = (spinner, err, options) => {
   return spinner[spinType](message);
 };
 
+const getNameFromPath = (path) => {
+  if (path === "/") {
+    return "index";
+  } else {
+    return path
+      .split("/")
+      .filter((str) => str.length > 0)
+      .join("-");
+  }
+};
+
+const capitalize = (s) => {
+  if (typeof s !== "string") return "";
+  return s.charAt(0).toUpperCase() + s.slice(1);
+};
+
 module.exports = {
   dir,
   promiseResolver,
   timeout,
   spinUtil,
+  getNameFromPath,
+  capitalize,
 };

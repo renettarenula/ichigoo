@@ -38,4 +38,16 @@ program
     }
   });
 
+program
+  .command("serve")
+  .description("Serve production site on local dev")
+  .action(function () {
+    const cmdPath = resolveCwd.silent("ichigoo/lib/command/serve.js");
+    if (cmdPath) {
+      process.env.NODE_ENV = "production";
+      const serve = require(cmdPath);
+      serve();
+    }
+  });
+
 program.parse(process.argv);
