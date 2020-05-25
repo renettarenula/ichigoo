@@ -5,12 +5,11 @@ var utils = require("./ops/utils.js");
 var chalk = require("chalk");
 var apollo = require("apollo-server");
 var schema = require("./graphql/Schema.js");
+var markdown = require("./ops/markdown.js");
 
 const server = () => {
   var app = express();
-  app.use(
-    serveStatic(path.join(utils.dir(), "dist"), { extensions: ["html"] })
-  );
+  app.use(serveStatic(path.join(utils.dir(), "dist"), { extensions: ["html"] }));
 
   var port = process.env.PORT || 5000;
   app.listen(port);
@@ -18,35 +17,10 @@ const server = () => {
   console.log(chalk.cyan.bold("Start server at port 5000"));
 };
 
-const graphQLServer = () => {
+const graphQLServer = async () => {
   const ApolloServer = apollo.ApolloServer;
 
-  const data = {
-    posts: [
-      {
-        id: 1,
-        title: "My favorite cat",
-        views: 1000,
-        user_id: 123,
-      },
-      {
-        id: 2,
-        title: "My favorite kitty",
-        views: 1000,
-        user_id: 456,
-      },
-    ],
-    users: [
-      {
-        id: 123,
-        name: "John Doe",
-      },
-      {
-        id: 456,
-        name: "Jane Doe",
-      },
-    ],
-  };
+  const data = await markdown.getMarkdownSource();
 
   const typeDefs = schema.typeDefs(data);
   const resolvers = schema.resolvers(data);
@@ -56,11 +30,7 @@ const graphQLServer = () => {
   apolloServer
     .listen()
     .then(({ url }) =>
-      console.log(
-        `🚀 ${chalk.bold(`GraphQL Server ready at`)} ${chalk.cyan.bold(
-          `${url}`
-        )}`
-      )
+      console.log(`🚀 ${chalk.bold(`GraphQL Server ready at`)} ${chalk.cyan.bold(`${url}`)}`)
     );
 };
 
