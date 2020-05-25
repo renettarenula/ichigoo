@@ -12,6 +12,7 @@ const directory = path.resolve(".");
 const utils = require("../ops/utils.js");
 const static = require("../ops/static.js");
 const fs = require("fs");
+const scrub = require("../ops/scrub.js");
 
 /**
  * Generate SSR file and add it to main project
@@ -112,6 +113,7 @@ const runBundle = async () => {
       }
 
       const data = await createStatic(hashedCollections);
+      await scrub();
 
       if (data) {
         console.log("");
