@@ -55,7 +55,13 @@ const graphQLServer = () => {
 
   apolloServer
     .listen()
-    .then(({ url }) => console.log(`🚀 GraphQL Server ready at ${url}`));
+    .then(({ url }) =>
+      console.log(
+        `🚀 ${chalk.bold(`GraphQL Server ready at`)} ${chalk.cyan.bold(
+          `${url}`
+        )}`
+      )
+    );
 };
 
 module.exports = { server, graphQLServer };
