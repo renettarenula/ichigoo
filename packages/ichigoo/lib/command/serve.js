@@ -1,7 +1,7 @@
 const server = require("../server.js");
 
 const serve = () => {
-  server();
+  server.server();
 };
 
 module.exports = server;
