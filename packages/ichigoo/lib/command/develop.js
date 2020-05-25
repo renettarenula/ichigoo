@@ -4,6 +4,7 @@
 
 const Bundler = require("parcel-bundler");
 const path = require("path");
+const server = require("../server.js");
 
 const develop = async () => {
   const bundle = new Bundler(
@@ -16,6 +17,7 @@ const develop = async () => {
 
   await bundle.serve();
   await bundle.bundle();
+  await server.graphQLServer();
 };
 
 module.exports = develop;

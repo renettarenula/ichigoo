@@ -30,16 +30,23 @@
     "url": "git+https://github.com/renettarenula/ichigoo.git"
   },
   "scripts": {
-    "test": "echo \"Error: run tests from root\" && exit 1"
+    "test": "echo \"Error: run tests from root\" && exit 1",
+    "gql:transpile": "babel ./lib/gql -d ./lib/graphql"
   },
   "bugs": {
     "url": "https://github.com/renettarenula/ichigoo/issues"
   },
   "dependencies": {
+    "apollo-server": "^2.13.1",
     "async": "^3.2.0",
     "express": "^4.17.1",
+    "express-graphql": "^0.9.0",
+    "graphql-tools": "^6.0.0",
+    "graphql-type-json": "^0.3.1",
     "ichigoo-cli": "^0.0.0",
+    "inflection": "^1.12.0",
     "parcel-bundler": "^1.12.4",
+    "react": "^16.13.1",
     "rimraf": "^3.0.2",
     "serve-static": "^1.14.1"
   },
