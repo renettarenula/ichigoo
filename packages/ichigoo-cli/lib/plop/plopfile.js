@@ -51,6 +51,16 @@ module.exports = function (plop) {
         path: "{{cwd}}/{{name}}/routes.js",
         templateFile: "templates/routes.hbs",
       },
+      {
+        type: "add",
+        path: "{{cwd}}/{{name}}/index.html",
+        templateFile: "templates/index.hbs",
+      },
+      {
+        type: "add",
+        path: "{{cwd}}/{{name}}/index.js",
+        templateFile: "templates/index.js.hbs",
+      },
     ],
   });
 };

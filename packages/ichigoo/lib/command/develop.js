@@ -5,9 +5,10 @@
 const Bundler = require("parcel-bundler");
 const path = require("path");
 const server = require("../server.js");
+const utils = require("../ops/utils.js");
 
 const develop = async () => {
-  const bundle = new Bundler([path.join(__dirname, "../bootstrap/dev/index.html")], {
+  const bundle = new Bundler([path.join(utils.dir(), "index.html")], {
     watch: true,
     hmr: true,
   });
