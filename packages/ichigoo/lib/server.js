@@ -21,6 +21,9 @@ const graphQLServer = async () => {
   const ApolloServer = apollo.ApolloServer;
 
   const data = await markdown.getMarkdownSource();
+  if (!data) {
+    return;
+  }
 
   const typeDefs = schema.typeDefs(data);
   const resolvers = schema.resolvers(data);

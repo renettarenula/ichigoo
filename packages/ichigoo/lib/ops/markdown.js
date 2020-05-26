@@ -9,6 +9,11 @@ const path = require("path");
  * automatically generated from this data.
  */
 const getMarkdownSource = async () => {
+  // do not start GQL server if content doesn't exist
+  if (!fs.existsSync(path.join(utils.dir(), "src/content"))) {
+    return;
+  }
+
   const items = await getMarkdownContent();
 
   return Promise.all(items).then((content) => {
