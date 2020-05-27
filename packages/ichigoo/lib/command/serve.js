@@ -4,4 +4,4 @@ const serve = () => {
   server.server();
 };
 
-module.exports = server;
+module.exports = serve;

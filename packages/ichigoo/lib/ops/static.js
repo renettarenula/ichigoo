@@ -6,7 +6,6 @@ const utils = require("./utils.js");
 const HTML = require("./templates/html.js");
 const resolveCwd = require("resolve-cwd");
 const fs = require("fs");
-
 /**
  * Generate a collection of HTML markup based on
  * routes list of the main project
