@@ -28,6 +28,11 @@ module.exports = function (plop) {
       },
       {
         type: "add",
+        path: "{{cwd}}/{{name}}/src/components/Link.js",
+        templateFile: "templates/components/link.hbs",
+      },
+      {
+        type: "add",
         path: "{{cwd}}/{{name}}/src/pages/About.js",
         templateFile: "templates/pages/about.hbs",
       },

@@ -16,7 +16,7 @@
   "author": "renettarenula <ren.aysha@gmail.com>",
   "homepage": "https://github.com/renettarenula/ichigoo#readme",
   "license": "MIT",
-  "main": "lib/index.js",
+  "main": "dist/index.js",
   "source": true,
   "directories": {
     "lib": "lib",
@@ -31,7 +31,7 @@
   },
   "scripts": {
     "test": "echo \"Error: run tests from root\" && exit 1",
-    "gql:transpile": "babel ./lib/gql -d ./lib/graphql"
+    "transpile:main": "babel ./lib/index.js --out-dir ./dist"
   },
   "bugs": {
     "url": "https://github.com/renettarenula/ichigoo/issues"
