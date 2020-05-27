@@ -4,4 +4,8 @@ const serve = () => {
   server.server();
 };
 
-module.exports = serve;
+const gql = () => {
+  server.graphQLServer();
+};
+
+module.exports = { serve, gql };
