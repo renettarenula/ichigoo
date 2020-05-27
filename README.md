@@ -85,10 +85,14 @@ npm install
 
 You can check if there's a single local copy of React by running `npm ls react` on `ichigoo/packages/ichigoo`. You should get something like this:
 
+```
 ichigoo@0.0.0 /your/local/path/ichigoo/packages/ichigoo
 └── react@16.13.1 -> /your/local/path/static-site/node_modules/react
+```
 
 Running `npm ls react` on your main project should get you this:
 
+```
 static-site@1.0.0 /your/local/path/static-site
 └── react@16.13.1
+```
