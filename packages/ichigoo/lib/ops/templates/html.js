@@ -2,10 +2,8 @@
  * Simple HTML skeleton that will be used to
  * build static HTML and manifest files
  */
-const HTML = (component, scripts) => {
-  const dependencies = scripts.map(
-    (script) => `<script src="${script}" async></script>`
-  );
+const HTML = (component, scripts, initialState) => {
+  const dependencies = scripts.map((script) => `<script src="${script}" async></script>`);
 
   return `
     <!DOCTYPE html>
@@ -19,6 +17,12 @@ const HTML = (component, scripts) => {
                 ${component}
             </div>
             ${dependencies.join("")}
+            ${
+              initialState &&
+              `<script type="text/javascript">window.__APOLLO_STATE__ = ${JSON.stringify(
+                initialState
+              ).replace(/</g, "\\u003c")}</script>`
+            }
         </body>
     </html>
     `;

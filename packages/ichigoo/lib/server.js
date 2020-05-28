@@ -21,6 +21,7 @@ const graphQLServer = async () => {
   const ApolloServer = apollo.ApolloServer;
 
   const data = await markdown.getMarkdownSource();
+
   if (!data) {
     return;
   }
