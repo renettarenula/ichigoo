@@ -6,64 +6,30 @@ const utils = require("./utils.js");
 const HTML = require("./templates/html.js");
 const resolveCwd = require("resolve-cwd");
 const fs = require("fs");
-const ReactDOM = require("react-dom/server");
 const getDataFromTree = require("@apollo/react-ssr").getDataFromTree;
+const prerender = require("./prerender.js");
 
 /**
  * Generate a collection of HTML markup based on
  * routes list of the main project
  */
-const markupCollection = () => {
+const markupCollection = async () => {
   const routesPath = resolveCwd.silent("./build/routes.js");
-  const ssrPath = resolveCwd.silent("./build/src/ssr.js");
+  const promises = [];
 
-  // const collection = {};
-
-  if (!routesPath || !ssrPath) {
+  if (!routesPath) {
     throw new Error("No routes path can be found");
   }
 
   const routes = require(routesPath).default;
-  const ssrMain = require(ssrPath);
-  const SSR = ssrMain.default;
-  const client = ssrMain.client;
-  const markup = ssrMain.Markup;
-  const promises = [];
 
   routes.forEach((route) => {
-    promises.push(
-      new Promise((resolve, reject) => {
-        console.log("this runs?");
-        getDataFromTree(markup({ route, routes })).then(() => {
-          console.log("thenable runs");
-          const collect = {};
-          const content = ReactDOM.renderToString(markup({ route, routes }));
-          const initialState = client.extract();
-
-          resolve({
-            markup: content,
-            name: utils.capitalize(utils.getNameFromPath(route.path)),
-            path: route.path,
-            initialState: initialState,
-          });
-        });
-      })
-    );
+    promises.push(prerender.preparePrerender(route, routes));
   });
 
   return Promise.all(promises).then((content) => {
     return content;
   });
-
-  // routes.forEach((route) => {
-  //   collection[utils.getNameFromPath(route.path)] = {
-  //     markup: SSR(route, routes),
-  //     name: utils.capitalize(utils.getNameFromPath(route.path)),
-  //     path: route.path,
-  //   };
-  // });
-
-  // return collection;
 };
 
 /**
