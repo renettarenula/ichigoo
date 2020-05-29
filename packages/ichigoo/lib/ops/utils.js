@@ -62,11 +62,23 @@ const prepareDir = (path) => {
 /**
  * Simple utility to get asset
  *
+ * @param {*} path - path of file
  * @param {*} basename - name of file act as key in order to get the hash files
  * @param {*} hashedFiles - Collection of bundled files with hash (e.g about.3453ed.js)
  */
-const assignAsset = (basename, hashedFiles) => {
-  return `./${hashedFiles[basename]}`;
+const assignAsset = (path, basename, hashedFiles) => {
+  const occurence = path.split("/").length - 1;
+  let prefix = "";
+
+  if (occurence === 1) {
+    prefix = `./`;
+  } else {
+    for (let i = 0; i < occurence - 1; i++) {
+      prefix += `../`;
+    }
+  }
+
+  return `${prefix}${hashedFiles[basename]}`;
 };
 
 module.exports = {

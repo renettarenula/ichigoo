@@ -38,19 +38,13 @@ const generateManifest = () => {
     fs.readdir(path.join(utils.dir(), "./src/pages"), (err, files) => {
       const scripts = files.map((file) => `./src/pages/${file}`);
       scripts.push("./src/hydrate.js");
-      fs.writeFile(
-        path.join(utils.dir(), "manifest.html"),
-        HTML(null, scripts),
-        (e) => {
-          if (e) {
-            reject(
-              new Error("There is an issue in creating the manifest file.")
-            );
-          } else {
-            resolve();
-          }
+      fs.writeFile(path.join(utils.dir(), "manifest.html"), HTML(null, scripts), (e) => {
+        if (e) {
+          reject(new Error("There is an issue in creating the manifest file."));
+        } else {
+          resolve();
         }
-      );
+      });
     });
   });
 };

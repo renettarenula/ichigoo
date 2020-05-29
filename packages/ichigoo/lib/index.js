@@ -7,6 +7,10 @@ const ALL_ROUTES = [];
  * This allows us to generate static HTML based on the routes listed here.
  * Everytime IchigooLink is used, it will capture the props and store it
  * in an array. This array will be used in order to generate static HTML.
+ *
+ * Cons: Need to ensure that pages are linked on standard routes like "home"
+ * If no dynamic links are used on standard pages, links will not be recorded.
+ * A remedy to this may just be to get data directly from the markdown object.
  */
 const IchigooLink = (Component) => {
   return class extends React.Component {

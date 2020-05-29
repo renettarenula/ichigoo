@@ -4,22 +4,30 @@
 const utils = require("./utils.js");
 const resolveCwd = require("resolve-cwd");
 const prerender = require("./prerender.js");
+const dynamicRoutes = require("../../dist/index.js");
+const match = require("path-to-regexp").match;
 
-/**
- * Generate a collection of HTML markup based on
- * routes list of the main project
- */
-const markupCollection = async () => {
+const getRoutes = () => {
   const routesPath = resolveCwd.silent("./build/routes.js");
-  const promises = [];
 
   if (!routesPath) {
     throw new Error("No routes path can be found");
   }
 
-  const routes = require(routesPath).default;
+  return require(routesPath).default;
+};
 
-  routes.forEach((route) => {
+/**
+ * Generate a collection of HTML markup based on
+ * routes list of the main project.
+ */
+const markupCollection = async () => {
+  const promises = [];
+  const routes = getRoutes();
+  // separate dynamic and standard routes
+  const standard = routes.filter((route) => !route.path.match(/:\w+/gm));
+
+  standard.forEach((route) => {
     promises.push(prerender.preparePrerender(route, routes));
   });
 
@@ -28,8 +36,49 @@ const markupCollection = async () => {
   });
 };
 
-// TODO: Handle directory URL like this:
-// aysha.me/post/first-post.html
+/**
+ * Generate a collection of HTML markup based on
+ * dynamic routes list. We will also assign templates to it.
+ *
+ * dynamicRoutes.ALL_ROUTES will include standard routes.
+ * So we need to filter it to include only dynamic routes.
+ * An easy way is to compare it will the original routes list and
+ * search for routes that are not listed in the original routes.
+ * Dynamic routes will not be listed since it will be represented with
+ * a colon (:). For example, /blog/my-first-post
+ * will be represented as /blog/:slug in original route.
+ *
+ * Ideally, we should have some sort of a config file to handle
+ * assigning templates to the routes but we can go with this as a PoC.
+ */
+const dynamicMarkupCollection = async () => {
+  const promises = [];
+  const routes = getRoutes();
+  const paths = routes.map((item) => item.path);
+  const recordedDynamic = dynamicRoutes.ALL_ROUTES.filter((item) => paths.indexOf(item) === -1);
+  const aliases = routes.filter((route) => route.path.match(/:\w+/gm));
+  const recordedDynamicList = [];
+
+  recordedDynamic
+    .map((item) => ({ path: item }))
+    .forEach((item) => {
+      aliases.forEach((route) => {
+        const regmatch = match(route.path, { decode: decodeURIComponent });
+        if (regmatch(item.path)) {
+          recordedDynamicList.push(Object.assign(item, { name: route.name }));
+        }
+      });
+    });
+
+  recordedDynamicList.forEach((route) => {
+    promises.push(prerender.preparePrerender(route, routes));
+  });
+
+  return Promise.all(promises).then((content) => {
+    return content;
+  });
+};
+
 /**
  *  Generate static HTML files
  *
@@ -40,9 +89,14 @@ const generateStatic = async (hashedFiles) => {
     const collections = await markupCollection();
     const promises = [];
 
-    console.log("debugger", collections);
-
     collections.forEach(async (item) => {
+      await utils.prepareDir(item.path);
+      promises.push(prerender.prepareStatic(item, hashedFiles));
+    });
+
+    const dynamicCollections = await dynamicMarkupCollection();
+
+    dynamicCollections.forEach(async (item) => {
       await utils.prepareDir(item.path);
       promises.push(prerender.prepareStatic(item, hashedFiles));
     });

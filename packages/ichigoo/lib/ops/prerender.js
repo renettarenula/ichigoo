@@ -34,7 +34,7 @@ const preparePrerender = async (route, routes) => {
 
       resolve({
         markup: content,
-        name: utils.capitalize(utils.getNameFromPath(route.path)),
+        name: route.name,
         path: route.path,
         initialState: initialState,
       });
@@ -66,8 +66,8 @@ const prepareHTML = (route, hashedFiles) => {
   return HTML(
     route.markup,
     [
-      utils.assignAsset(`${route.name}.js`, hashedFiles),
-      utils.assignAsset(`hydrate.js`, hashedFiles),
+      utils.assignAsset(route.path, `${route.name}.js`, hashedFiles),
+      utils.assignAsset(route.path, `hydrate.js`, hashedFiles),
     ],
     route.initialState
   );
