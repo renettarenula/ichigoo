@@ -32,6 +32,7 @@ const removeFs = () => {
       [
         path.join(utils.dir(), "src/hydrate.js"),
         path.join(utils.dir(), "src/ssr.js"),
+        path.join(utils.dir(), "src/data.graphql.json"),
       ],
       () => {
         resolve();

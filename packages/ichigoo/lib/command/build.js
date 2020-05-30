@@ -13,6 +13,7 @@ const utils = require("../ops/utils.js");
 const static = require("../ops/static.js");
 const fs = require("fs");
 const scrub = require("../ops/scrub.js");
+const gqlData = require("../ops/data.js").generateData;
 
 /**
  * Generate SSR file and add it to main project
@@ -42,19 +43,27 @@ const transpileSource = async () => {
 
   await generateSSR();
 
-  await transpile.transformDir(
-    path.join(directory, "src"),
-    path.join(directory, "build/src")
-  );
+  await transpile.transformDir(path.join(directory, "src"), path.join(directory, "build/src"));
 
-  await transpile.transform(
-    "routes.js",
-    path.join(directory),
-    path.join(directory, "build")
-  );
+  await transpile.transform("routes.js", path.join(directory), path.join(directory, "build"));
 
   await utils.timeout(() => {
     spinner.succeed(chalk.green.bold("Source files transpiled!"));
+  }, 2000);
+};
+
+/**
+ * Generate graphql data file
+ */
+const createGqlDataFile = async () => {
+  const spinner = ora(chalk.grey.bold("Generating static data")).start();
+  const [err, data] = await utils.promiseResolver(gqlData());
+
+  await utils.timeout(() => {
+    utils.spinUtil(spinner, err, {
+      error: `Trouble generating static data - ${err}`,
+      success: "Static data created!",
+    });
   }, 2000);
 };
 
@@ -80,9 +89,7 @@ const createManifest = async () => {
  */
 const createStatic = async (hashedCollections) => {
   const spinner = ora(chalk.grey.bold("Generating static files")).start();
-  const [err, data] = await utils.promiseResolver(
-    static.generateStatic(hashedCollections)
-  );
+  const [err, data] = await utils.promiseResolver(static.generateStatic(hashedCollections));
 
   await utils.timeout(() => {
     utils.spinUtil(spinner, err, {
@@ -107,9 +114,7 @@ const runBundle = async () => {
       const hashedCollections = {};
 
       for (let asset of bundle.childBundles) {
-        hashedCollections[asset.entryAsset.basename] = asset.name.match(
-          /[^\\/]+$/
-        )[0];
+        hashedCollections[asset.entryAsset.basename] = asset.name.match(/[^\\/]+$/)[0];
       }
 
       const data = await createStatic(hashedCollections);
@@ -118,9 +123,7 @@ const runBundle = async () => {
       if (data) {
         console.log("");
         for (let [key, value] of Object.entries(data)) {
-          console.log(
-            `${chalk.grey(`dist/`)}${chalk.cyan.bold(`${data[key].name}.html`)}`
-          );
+          console.log(`${chalk.grey(`dist/`)}${chalk.cyan.bold(`${data[key].name}.html`)}`);
         }
       }
     });
@@ -131,6 +134,7 @@ const runBundle = async () => {
 
 const build = async () => {
   await transpileSource();
+  await createGqlDataFile();
   await createManifest();
   await runBundle();
 };
