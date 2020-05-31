@@ -3,6 +3,7 @@ const fm = require("frontmatter");
 const utils = require("./utils.js");
 const path = require("path");
 const resolveCwd = require("resolve-cwd");
+const fsp = fs.promises;
 
 /**
  * Get all markdown content.
@@ -46,15 +47,13 @@ const aggregateMarkdownContent = (mainPath, filenames) => {
 
   filenames.forEach((filename) => {
     promises.push(
-      new Promise((resolve, reject) => {
-        fs.readFile(path.join(utils.dir(), `${mainPath}/${filename}`), "utf8", (err, data) => {
-          if (err) {
-            reject(err);
-          }
+      new Promise(async (resolve, reject) => {
+        const source = path.join(utils.dir(), `${mainPath}/${filename}`);
+        const [err, data] = await utils.promiseResolver(fsp.readFile(source, "utf8"));
 
-          const meta = fm(data).data;
-          resolve(Object.assign({}, { id: ++id }, { ...meta, content: fm(data).content }));
-        });
+        if (err) reject(err);
+        const meta = fm(data).data;
+        resolve(Object.assign({}, { id: ++id }, { ...meta, content: fm(data).content }));
       })
     );
   });
@@ -70,7 +69,8 @@ const aggregateMarkdownContent = (mainPath, filenames) => {
  * @param {*} filename - name of file
  */
 const resolveAggMarkdownContent = (data, filenames) => {
-  return Promise.all(aggregateMarkdownContent(data.path, filenames)).then((markdownContent) => {
+  const getData = aggregateMarkdownContent(data.path, filenames);
+  return Promise.all(getData).then((markdownContent) => {
     const obj = {};
     obj[data.name] = markdownContent;
     return obj;
@@ -96,14 +96,14 @@ const getMarkdownContent = () => {
   markdown.forEach((data) => {
     promises.push(
       new Promise(async (resolve, reject) => {
-        fs.readdir(path.join(utils.dir(), data.path), (err, filenames) => {
-          if (err) {
-            reject(err);
-          }
+        const [err, filenames] = await utils.promiseResolver(
+          fsp.readdir(path.join(utils.dir(), data.path))
+        );
 
-          return resolveAggMarkdownContent(data, filenames).then((content) => {
-            resolve(content);
-          });
+        if (err) reject(err);
+
+        return resolveAggMarkdownContent(data, filenames).then((content) => {
+          resolve(content);
         });
       })
     );
