@@ -66,6 +66,11 @@ module.exports = function (plop) {
         path: "{{cwd}}/{{name}}/index.js",
         templateFile: "templates/index.js.hbs",
       },
+      {
+        type: "add",
+        path: "{{cwd}}/{{name}}/ichigoo-config.js",
+        templateFile: "templates/config.hbs",
+      },
     ],
   });
 };

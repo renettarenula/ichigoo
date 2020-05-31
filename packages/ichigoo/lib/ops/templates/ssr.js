@@ -20,7 +20,7 @@ import { InMemoryCache } from "apollo-boost";
 // Remember that this will be copied to main project.
 // So this is how we should access current durectory
 const gqlSchema = require("ichigoo/lib/graphql/Schema.js");
-const getMarkdownSource = require("ichigoo/lib/ops/markdown.js").getMarkdownSource;
+const collection = require("ichigoo/lib/ops/collection.js").DataCollection;
 
 /**
  * Construct Apollo Client for prerendering.
@@ -28,13 +28,7 @@ const getMarkdownSource = require("ichigoo/lib/ops/markdown.js").getMarkdownSour
  * form the type definitions and resolvers
  */
 const getClient = async () => {
-  const data = await getMarkdownSource();
-
-  if (!data) {
-    console.log("You don't seem to have any markdown data to render. Moving on.");
-    return;
-  }
-
+  const data = collection.data();
   const typeDefs = gqlSchema.typeDefs(data);
   const resolvers = gqlSchema.resolvers(data);
 

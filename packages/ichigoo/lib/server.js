@@ -6,6 +6,7 @@ var chalk = require("chalk");
 var apollo = require("apollo-server");
 var schema = require("./graphql/Schema.js");
 var markdown = require("./ops/markdown.js");
+var DataCollection = require("./ops/collection").DataCollection;
 
 const server = () => {
   var app = express();
@@ -19,13 +20,15 @@ const server = () => {
 
 const graphQLServer = async () => {
   const ApolloServer = apollo.ApolloServer;
+  const markdownData = await markdown.getMarkdownSource();
 
-  const data = await markdown.getMarkdownSource();
-
-  if (!data) {
+  if (!markdownData) {
     return;
   }
 
+  DataCollection.add(markdownData);
+
+  const data = DataCollection.data();
   const typeDefs = schema.typeDefs(data);
   const resolvers = schema.resolvers(data);
 

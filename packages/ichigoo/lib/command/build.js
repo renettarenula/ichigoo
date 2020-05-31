@@ -14,6 +14,7 @@ const static = require("../ops/static.js");
 const fs = require("fs");
 const scrub = require("../ops/scrub.js");
 const gqlData = require("../ops/data.js").generateData;
+const processInitialData = require("../ops/data.js").processInitialData;
 
 /**
  * Generate SSR file and add it to main project
@@ -133,6 +134,7 @@ const runBundle = async () => {
 };
 
 const build = async () => {
+  await processInitialData();
   await transpileSource();
   await createGqlDataFile();
   await createManifest();
