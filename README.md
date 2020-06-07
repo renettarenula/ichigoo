@@ -70,7 +70,9 @@ Then, you can start developing by generating a main project.
 ichigoo new -- --name static-site
 ```
 
-In order to work on the local version of this repo, run `npm link` under `ichigoo/packages/ichigoo`. Then run `npm link ichigoo` on the `static-site` folder.
+1. Run `npm install` then `npm link` under `ichigoo/packages/ichigoo-cli`.
+2. Then, run `npm link ichigoo-cli` under `ichigoo/packages/ichigoo`. Then, run `npm install` under this folder. You also need to run `npm install react react-dom apollo-client`.
+3. Run `npm install` and then `npm link ichigoo` on static-site.
 
 In order to avoid errors due to multiple module copy, it is important to manually resolve npm links. For example, here's how to resolve module linking for react.
 
@@ -80,7 +82,6 @@ npm link
 
 cd ichigoo/packages/ichigoo
 npm link react
-npm install
 ```
 
 You can check if there's a single local copy of React by running `npm ls react` on `ichigoo/packages/ichigoo`. You should get something like this:
