@@ -4,8 +4,9 @@
 const utils = require("./utils.js");
 const resolveCwd = require("resolve-cwd");
 const prerender = require("./prerender.js");
-const dynamicRoutes = require("../../dist/index.js");
 const match = require("path-to-regexp").match;
+const DataCollection = require("./collection").DataCollection;
+const IchigooConfig = require("./config.js");
 
 const getRoutes = () => {
   const routesPath = resolveCwd.silent("./build/routes.js");
@@ -38,37 +39,24 @@ const markupCollection = async () => {
 
 /**
  * Generate a collection of HTML markup based on
- * dynamic routes list. We will also assign templates to it.
- *
- * dynamicRoutes.ALL_ROUTES will include standard routes.
- * So we need to filter it to include only dynamic routes.
- * An easy way is to compare it will the original routes list and
- * search for routes that are not listed in the original routes.
- * Dynamic routes will not be listed since it will be represented with
- * a colon (:). For example, /blog/my-first-post
- * will be represented as /blog/:slug in original route.
- *
- * Ideally, we should have some sort of a config file to handle
- * assigning templates to the routes but we can go with this as a PoC.
+ * markdown slugs. Traverse through all of the markdown files,
+ * get the slugs, and prepare prerender data based on it.
  */
 const dynamicMarkupCollection = async () => {
+  const config = IchigooConfig();
+  const markdown = config.options && config.options.markdown;
   const promises = [];
   const routes = getRoutes();
-  const paths = routes.map((item) => item.path);
-  const recordedDynamic = dynamicRoutes.ALL_ROUTES.filter((item) => paths.indexOf(item) === -1);
-  const aliases = routes.filter((route) => route.path.match(/:\w+/gm));
   const recordedDynamicList = [];
 
-  recordedDynamic
-    .map((item) => ({ path: item }))
-    .forEach((item) => {
-      aliases.forEach((route) => {
-        const regmatch = match(route.path, { decode: decodeURIComponent });
-        if (regmatch(item.path)) {
-          recordedDynamicList.push(Object.assign(item, { name: route.name }));
-        }
-      });
+  markdown.forEach((item) => {
+    const collections = DataCollection.data()[item.name];
+    collections.forEach((collection) => {
+      recordedDynamicList.push(
+        Object.assign({}, { path: collection.slug, name: utils.getNameFromTemplate(item.template) })
+      );
     });
+  });
 
   recordedDynamicList.forEach((route) => {
     promises.push(prerender.preparePrerender(route, routes));

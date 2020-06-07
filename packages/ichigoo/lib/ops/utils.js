@@ -81,6 +81,17 @@ const assignAsset = (path, basename, hashedFiles) => {
   return `${prefix}${hashedFiles[basename]}`;
 };
 
+/**
+ * Given a template name, return only its filename.
+ * For example, "src/pages/Blog.js" will return "Blog"
+ *
+ * @param {*} templateName - name of asset file. E.g. src/pages/Blog.js
+ */
+const getNameFromTemplate = (templateName) => {
+  const tname = templateName.match(/[^\\/]+$/)[0];
+  return tname.split(".")[0];
+};
+
 module.exports = {
   dir,
   promiseResolver,
@@ -90,4 +101,5 @@ module.exports = {
   capitalize,
   prepareDir,
   assignAsset,
+  getNameFromTemplate,
 };
