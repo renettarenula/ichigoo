@@ -49,6 +49,10 @@ const dynamicMarkupCollection = async () => {
   const routes = getRoutes();
   const recordedDynamicList = [];
 
+  if (!markdown) {
+    return Promise.resolve([]);
+  }
+
   markdown.forEach((item) => {
     const collections = DataCollection.data()[item.name];
     collections.forEach((collection) => {
@@ -84,10 +88,12 @@ const generateStatic = async (hashedFiles) => {
 
     const dynamicCollections = await dynamicMarkupCollection();
 
-    dynamicCollections.forEach(async (item) => {
-      await utils.prepareDir(item.path);
-      promises.push(prerender.prepareStatic(item, hashedFiles));
-    });
+    if (dynamicCollections.length > 0) {
+      dynamicCollections.forEach(async (item) => {
+        await utils.prepareDir(item.path);
+        promises.push(prerender.prepareStatic(item, hashedFiles));
+      });
+    }
 
     Promise.all(promises)
       .then(() => {
