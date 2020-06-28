@@ -2,6 +2,8 @@ const fs = require("fs");
 const fm = require("frontmatter");
 const utils = require("./utils.js");
 const path = require("path");
+const resolveCwd = require("resolve-cwd");
+const fsp = fs.promises;
 
 /**
  * Get all markdown content.
@@ -9,35 +11,49 @@ const path = require("path");
  * automatically generated from this data.
  */
 const getMarkdownSource = async () => {
+  // do not start GQL server if content doesn't exist
+  if (!fs.existsSync(path.join(utils.dir(), "src/content"))) {
+    return;
+  }
+
   const items = await getMarkdownContent();
 
-  return Promise.all(items).then((content) => {
-    // TODO: have the key of this content configurable as well
-    return { posts: content };
-  });
+  if (items.length > 0) {
+    return Promise.all(items).then((content) => {
+      const result = {};
+
+      content.forEach((item) => {
+        Object.assign(result, item);
+      });
+
+      return result;
+    });
+  } else {
+    // resolve silently since markdowns are optional
+    return Promise.resolve({});
+  }
 };
 
 /**
  * Represent each readFile call as a single promise.
  * Returns the promise array.
  *
+ * @param {*} mainPath - main path of markdown files
  * @param {*} filenames - array of files in a directory
  */
-const aggregateMarkdownContent = (filenames) => {
+const aggregateMarkdownContent = (mainPath, filenames) => {
   const promises = [];
   let id = 0;
 
   filenames.forEach((filename) => {
     promises.push(
-      new Promise((resolve, reject) => {
-        fs.readFile(path.join(utils.dir(), `src/content/${filename}`), "utf8", (err, data) => {
-          if (err) {
-            reject(err);
-          }
+      new Promise(async (resolve, reject) => {
+        const source = path.join(utils.dir(), `${mainPath}/${filename}`);
+        const [err, data] = await utils.promiseResolver(fsp.readFile(source, "utf8"));
 
-          const meta = fm(data).data;
-          resolve(Object.assign({}, { id: ++id }, { ...meta, content: fm(data).content }));
-        });
+        if (err) reject(err);
+        const meta = fm(data).data;
+        resolve(Object.assign({}, { id: ++id }, { ...meta, content: fm(data).content }));
       })
     );
   });
@@ -46,23 +62,54 @@ const aggregateMarkdownContent = (filenames) => {
 };
 
 /**
+ * Resolve promises of aggregateMarkdownContent in order to
+ * read the content.
+ *
+ * @param {*} data - data of a single markdown option. Got this from ichigoo-config
+ * @param {*} filename - name of file
+ */
+const resolveAggMarkdownContent = (data, filenames) => {
+  const getData = aggregateMarkdownContent(data.path, filenames);
+  return Promise.all(getData).then((markdownContent) => {
+    const obj = {};
+    obj[data.name] = markdownContent;
+    return obj;
+  });
+};
+
+/**
  * Get markdown files from the source directory
  * and collect an array of promises representing
  * the call to get each content in a markdown file.
  */
 const getMarkdownContent = () => {
-  return new Promise(async (resolve, reject) => {
-    // TODO: Have the source directory be specified in a config file
-    // and read it from there
-    fs.readdir(path.join(utils.dir(), "src/content"), async (err, filenames) => {
-      if (err) {
-        reject(err);
-      }
+  const cmd = resolveCwd.silent(`./ichigoo-config.js`);
+  const promises = [];
 
-      const promises = aggregateMarkdownContent(filenames);
-      resolve(promises);
-    });
+  const config = require(cmd);
+  const markdown = config.options && config.options.markdown;
+
+  if (!markdown) {
+    return Promise.resolve([]);
+  }
+
+  markdown.forEach((data) => {
+    promises.push(
+      new Promise(async (resolve, reject) => {
+        const [err, filenames] = await utils.promiseResolver(
+          fsp.readdir(path.join(utils.dir(), data.path))
+        );
+
+        if (err) reject(err);
+
+        return resolveAggMarkdownContent(data, filenames).then((content) => {
+          resolve(content);
+        });
+      })
+    );
   });
+
+  return Promise.resolve(promises);
 };
 
 module.exports = {

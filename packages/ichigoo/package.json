@@ -16,7 +16,7 @@
   "author": "renettarenula <ren.aysha@gmail.com>",
   "homepage": "https://github.com/renettarenula/ichigoo#readme",
   "license": "MIT",
-  "main": "lib/index.js",
+  "main": "dist/index.js",
   "source": true,
   "directories": {
     "lib": "lib",
@@ -31,29 +31,31 @@
   },
   "scripts": {
     "test": "echo \"Error: run tests from root\" && exit 1",
-    "gql:transpile": "babel ./lib/gql -d ./lib/graphql"
+    "transpile:main": "babel ./lib/index.js --out-dir ./dist"
   },
   "bugs": {
     "url": "https://github.com/renettarenula/ichigoo/issues"
   },
   "dependencies": {
+    "@apollo/react-ssr": "^3.1.5",
     "apollo-server": "^2.13.1",
-    "async": "^3.2.0",
     "express": "^4.17.1",
-    "express-graphql": "^0.9.0",
     "frontmatter": "0.0.3",
-    "graphql-tools": "^6.0.0",
     "graphql-type-json": "^0.3.1",
     "ichigoo-cli": "^0.0.0",
     "inflection": "^1.12.0",
-    "parcel-bundler": "^1.12.4"
+    "parcel-bundler": "^1.12.4",
+    "path-to-regexp": "^6.1.0",
+    "react-apollo": "^3.1.5"
   },
   "devDependencies": {
     "@babel/cli": "^7.8.4",
     "@babel/core": "^7.9.6",
     "@babel/node": "^7.8.7",
+    "@babel/plugin-transform-runtime": "^7.9.6",
     "@babel/preset-env": "^7.9.6",
     "@babel/preset-react": "^7.9.4",
+    "@babel/runtime": "^7.9.6",
     "babel-plugin-root-import": "^6.5.0",
     "fs-extra": "^9.0.0",
     "globby": "^11.0.0",
@@ -62,8 +64,13 @@
     "serve-static": "^1.14.1"
   },
   "peerDependencies": {
+    "apollo-boost": "^0.4.9",
+    "apollo-link-schema": "^1.2.5",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
-    "react-router-dom": "^5.2.0"
+    "react-router-dom": "^5.2.0",
+    "graphql": "^14.5.8",
+    "graphql-tag": "^2.10.3",
+    "graphql-tools": "^6.0.0"
   }
 }

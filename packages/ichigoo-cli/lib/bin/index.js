@@ -46,7 +46,19 @@ program
     if (cmdPath) {
       process.env.NODE_ENV = "production";
       const serve = require(cmdPath);
-      serve();
+      serve.serve();
+    }
+  });
+
+program
+  .command("gql")
+  .description("Serve graphql server on local dev")
+  .action(function () {
+    const cmdPath = resolveCwd.silent("ichigoo/lib/command/serve.js");
+    if (cmdPath) {
+      process.env.NODE_ENV = "development";
+      const serve = require(cmdPath);
+      serve.gql();
     }
   });
 

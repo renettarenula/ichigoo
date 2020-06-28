@@ -1,7 +1,3 @@
-'use strict';
+const Ichigoo = () => {};
 
-module.exports = ichigoo;
-
-function ichigoo() {
-    // TODO
-}
+module.exports = Ichigoo;

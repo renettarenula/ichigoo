@@ -55,7 +55,45 @@ The codebase is well-commented so if you decided to dive in and see how it works
 
 Yes! But only if you are interested in learning about how static site generators work. Stuff would probably break along the way since this was purely created for learning purposes. If you're looking for something more serious, check out GatsbyJS or one of the many static site generator you can find here: https://www.staticgen.com/
 
-### Issues && Contributions
+## Development
 
-I would love to accept contributions especially if you found a bug or find something that I could have done better. It'll be a good way for me to learn from you. 🥂
+Uninstall any production version of Ichigoo and clone this repo. You can install the local CLI globally by running:
 
+```
+cd ichigoo/packages/ichigoo-cli
+npm install -g ./
+```
+
+Then, you can start developing by generating a main project.
+
+```
+ichigoo new -- --name static-site
+```
+
+1. Run `npm install` then `npm link` under `ichigoo/packages/ichigoo-cli`.
+2. Then, run `npm link ichigoo-cli` under `ichigoo/packages/ichigoo`. Then, run `npm install` under this folder. You also need to run `npm install react react-dom apollo-client`.
+3. Run `npm install` and then `npm link ichigoo` on static-site.
+
+In order to avoid errors due to multiple module copy, it is important to manually resolve npm links. For example, here's how to resolve module linking for react.
+
+```
+cd static-site/node_modules/react
+npm link
+
+cd ichigoo/packages/ichigoo
+npm link react
+```
+
+You can check if there's a single local copy of React by running `npm ls react` on `ichigoo/packages/ichigoo`. You should get something like this:
+
+```
+ichigoo@0.0.0 /your/local/path/ichigoo/packages/ichigoo
+└── react@16.13.1 -> /your/local/path/static-site/node_modules/react
+```
+
+Running `npm ls react` on your main project should get you this:
+
+```
+static-site@1.0.0 /your/local/path/static-site
+└── react@16.13.1
+```
