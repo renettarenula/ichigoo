@@ -1,6 +1,6 @@
 {
   "name": "ichigoo",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Static site generator with React and GraphQL",
   "keywords": [
     "React",
