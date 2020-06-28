@@ -95,6 +95,22 @@ const generateStatic = async (hashedFiles) => {
       });
     }
 
+    /**
+     * Generate static pages from ichigoo-node.js.
+     * Static pages will work automatically in dev mode
+     * but it has to be programmatically rendered through ichigoo-node.js.
+     *
+     * Process to create:
+     *
+     * 1. Create pages as per normal as you would on dev mode.
+     *    This page should be add in routes.js as well.
+     * 2. Create ichigoo-node.js (sample provided in the sample app)
+     * 3. For the routes parameter in create function, you just need to add path
+     *    without name or component since the routes.js file will already contain
+     *    this information.
+     */
+    prerender.prepareCreatedPages(getRoutes(), hashedFiles);
+
     Promise.all(promises)
       .then(() => {
         resolve(collections);

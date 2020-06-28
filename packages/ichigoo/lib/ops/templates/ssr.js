@@ -52,18 +52,21 @@ const Main = ({ routes }) => {
   return <Switch>{routeComponents}</Switch>;
 };
 
-const Markup = ({ route, routes, client }) => {
+const Markup = ({ route, routes, client, context }) => {
+  const ctx = context || {};
   return (
     <ApolloProvider client={client}>
-      <StaticRouter location={route.path}>
+      <StaticRouter location={route.path} context={ctx}>
         <Main routes={routes} />
       </StaticRouter>
     </ApolloProvider>
   );
 };
 
-const SSR = (route, routes, client) => {
-  return ReactDOMServer.renderToString(<Markup route={route} routes={routes} client={client} />);
+const SSR = (route, routes, client, context = {}) => {
+  return ReactDOMServer.renderToString(
+    <Markup route={route} routes={routes} client={client} context={context} />
+  );
 };
 
 export default SSR;

@@ -15,7 +15,7 @@ const HTML = require("./templates/html.js");
  * @param {*} route - a single route object representing the route that should be prerendered
  * @param {*} routes - a list of all the routes
  */
-const preparePrerender = async (route, routes) => {
+const preparePrerender = async (route, routes, context = {}) => {
   const ssrPath = resolveCwd.silent("./build/src/ssr.js");
 
   if (!ssrPath) {
@@ -28,8 +28,8 @@ const preparePrerender = async (route, routes) => {
   const prerender = prerenderer.default;
 
   return new Promise((resolve, reject) => {
-    getDataFromTree(markup({ route, routes, client })).then(() => {
-      const content = prerender(route, routes, client);
+    getDataFromTree(markup({ route, routes, client, context })).then(() => {
+      const content = prerender(route, routes, client, context);
       const initialState = client.extract();
 
       resolve({
@@ -40,6 +40,58 @@ const preparePrerender = async (route, routes) => {
       });
     });
   });
+};
+
+/**
+ * Get ApolloClient object created during build time
+ *
+ * TODO: Refactor and create a class to access SSR.
+ * Makes it much simpler and less repetition
+ */
+const apolloClient = () => {
+  const ssrPath = resolveCwd.silent("./build/src/ssr.js");
+
+  if (!ssrPath) {
+    throw new Error("No ssr path can be found");
+  }
+
+  const prerenderer = require(ssrPath);
+  return prerenderer.getClient();
+};
+
+/**
+ * A function that can be used to programatically create pages
+ *
+ * @param {*} hashedFiles - Collection of bundled files with hash (e.g about.3453ed.js)
+ */
+const createPage = (routes, hashedFiles) => {
+  return {
+    createPage: async ({ route, context }) => {
+      const item = await preparePrerender(route, routes, context);
+      await utils.prepareDir(item.path);
+      await prepareStatic(item, hashedFiles);
+    },
+  };
+};
+
+/**
+ * Generate pages based on configuration under ichigoo-node.js
+ *
+ * @param {*} routes - a list of all the routes
+ * @param {*} hashedFiles - hashed assets created by parcel
+ */
+const prepareCreatedPages = async (routes, hashedFiles) => {
+  const pageconf = resolveCwd.silent("./ichigoo-node.js");
+  // do nothing if there's no ichigoo-node file
+  if (!pageconf) {
+    return;
+  }
+
+  const client = await apolloClient();
+  const ichinode = require(pageconf);
+  const create = createPage(routes, hashedFiles).createPage;
+
+  await ichinode.createPages(client, create);
 };
 
 /**
@@ -73,4 +125,4 @@ const prepareHTML = (route, hashedFiles) => {
   );
 };
 
-module.exports = { preparePrerender, prepareStatic };
+module.exports = { preparePrerender, prepareStatic, prepareCreatedPages };
