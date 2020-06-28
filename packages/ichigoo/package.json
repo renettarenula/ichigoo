@@ -30,7 +30,7 @@
     "url": "git+https://github.com/renettarenula/ichigoo.git"
   },
   "scripts": {
-    "test": "echo \"Error: run tests from root\" && exit 1",
+    "test": "echo \"No test specified\"",
     "transpile:main": "babel ./lib/index.js --out-dir ./dist"
   },
   "bugs": {
