@@ -1,11 +1,45 @@
-# `ichigoo-cli`
+# Ichigoo 🐈
 
-> TODO: description
+CLI for creating Ichigoo project.
 
-## Usage
+**Disclaimer**: This is an experiment and was created for fun.
+
+## Installing
+
+In order to install, start with installing the CLI:
 
 ```
-const ichigooCli = require('ichigoo-cli');
+npm install -g ichigoo-cli
+```
 
-// TODO: DEMONSTRATE API
+Create a new static site project
+
+```
+ichigoo new -- --name static-site
+```
+
+## Development
+
+Run a dev server
+
+```
+ichigoo dev
+```
+
+Build for production
+
+```
+ichigoo build
+```
+
+Serve production server locally
+
+```
+ichigoo serve
+```
+
+Run graphQL server
+
+```
+ichigoo gql
 ```
