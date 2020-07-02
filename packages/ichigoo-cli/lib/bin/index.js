@@ -1,6 +1,4 @@
 #!/usr/bin/env node
-console.log("Hello, world!");
-
 var program = require("commander");
 var resolveCwd = require("resolve-cwd");
 var path = require("path");
