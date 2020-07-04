@@ -2,7 +2,6 @@ const getDataFromTree = require("@apollo/react-ssr").getDataFromTree;
 const utils = require("./utils.js");
 const resolveCwd = require("resolve-cwd");
 const fs = require("fs").promises;
-const HTML = require("./templates/html.js");
 const markup = require("./markup.js");
 
 /**
