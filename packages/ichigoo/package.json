@@ -39,6 +39,7 @@
   "dependencies": {
     "@apollo/react-ssr": "^3.1.5",
     "apollo-server": "^2.13.1",
+    "cheerio": "^1.0.0-rc.3",
     "express": "^4.17.1",
     "frontmatter": "0.0.3",
     "graphql-type-json": "^0.3.1",

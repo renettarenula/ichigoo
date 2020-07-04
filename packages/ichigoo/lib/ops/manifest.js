@@ -6,7 +6,7 @@
 const utils = require("./utils.js");
 const path = require("path");
 const fs = require("fs");
-const HTML = require("./templates/html.js");
+const markup = require("./markup.js");
 
 /**
  * Generate hydration file and add it to main project
@@ -35,10 +35,11 @@ const generateManifest = () => {
     const [err, data] = await utils.promiseResolver(generateHydrate());
     if (err) reject(new Error(err));
 
-    fs.readdir(path.join(utils.dir(), "./src/pages"), (err, files) => {
+    fs.readdir(path.join(utils.dir(), "./src/pages"), async (err, files) => {
       const scripts = files.map((file) => `./src/pages/${file}`);
       scripts.push("./src/hydrate.js");
-      fs.writeFile(path.join(utils.dir(), "manifest.html"), HTML(null, scripts), (e) => {
+      const HTML = await markup.createHTML(null, scripts);
+      fs.writeFile(path.join(utils.dir(), "manifest.html"), HTML, (e) => {
         if (e) {
           reject(new Error("There is an issue in creating the manifest file."));
         } else {
