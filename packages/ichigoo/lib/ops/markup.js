@@ -29,7 +29,7 @@ const getHTMLContent = async () => {
  */
 const createHTML = async (component, scripts, initialState, completeHash) => {
   const HTMLData = await getHTMLContent();
-  const dependencies = scripts.map((script) => `<script src="${script}" async></script>`);
+  const dependencies = scripts.map((script) => `<script src="${script}" defer></script>`);
 
   const $ = cheerio.load(HTMLData);
 
@@ -39,11 +39,6 @@ const createHTML = async (component, scripts, initialState, completeHash) => {
       const src = $(elem).attr("src");
       const name = `${utils.getNameFromTemplate(src)}.js`;
       $(elem).attr("src", completeHash[name]);
-
-      // remove file that is used only for development mode
-      if (name === "index.js") {
-        $(elem).attr("src", null);
-      }
     });
 
     $("link").each((i, elem) => {
@@ -57,10 +52,6 @@ const createHTML = async (component, scripts, initialState, completeHash) => {
     $("#content").prepend(`${component}`);
   }
 
-  if (dependencies.length > 0) {
-    $("body").append(`${dependencies.join("")}`);
-  }
-
   if (initialState) {
     $("body").append(
       `${
@@ -70,6 +61,12 @@ const createHTML = async (component, scripts, initialState, completeHash) => {
         ).replace(/</g, "\\u003c")}</script>`
       }`
     );
+  }
+
+  if (dependencies.length > 0) {
+    $("script")
+      .eq(0)
+      .after(`${dependencies.join("")}`);
   }
 
   return $.html();
