@@ -27,14 +27,34 @@ const getHTMLContent = async () => {
 /**
  * Process HTML by adding components, dependencies and app state
  */
-const createHTML = async (component, scripts, initialState) => {
+const createHTML = async (component, scripts, initialState, completeHash) => {
   const HTMLData = await getHTMLContent();
   const dependencies = scripts.map((script) => `<script src="${script}" async></script>`);
 
   const $ = cheerio.load(HTMLData);
 
+  /** Handle custom CSS and JS added under project's index.html */
+  if (completeHash) {
+    $("script").each((i, elem) => {
+      const src = $(elem).attr("src");
+      const name = `${utils.getNameFromTemplate(src)}.js`;
+      $(elem).attr("src", completeHash[name]);
+
+      // remove file that is used only for development mode
+      if (name === "index.js") {
+        $(elem).attr("src", null);
+      }
+    });
+
+    $("link").each((i, elem) => {
+      const href = $(elem).attr("href");
+      const name = `${utils.getNameFromTemplate(href)}.css`;
+      $(elem).attr("href", completeHash[name]);
+    });
+  }
+
   if (component) {
-    $("body").prepend(`<div id="ichigoo-content">${component}</div>`);
+    $("#content").prepend(`${component}`);
   }
 
   if (dependencies.length > 0) {

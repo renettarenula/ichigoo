@@ -121,7 +121,8 @@ const prepareHTML = (route, hashedFiles) => {
       utils.assignAsset(route.path, `${route.name}.js`, hashedFiles),
       utils.assignAsset(route.path, `hydrate.js`, hashedFiles),
     ],
-    route.initialState
+    route.initialState,
+    hashedFiles
   );
 };
 
