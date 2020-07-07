@@ -2,7 +2,7 @@ const getDataFromTree = require("@apollo/react-ssr").getDataFromTree;
 const utils = require("./utils.js");
 const resolveCwd = require("resolve-cwd");
 const fs = require("fs").promises;
-const HTML = require("./templates/html.js");
+const markup = require("./markup.js");
 
 /**
  * Run Apollo's getDataFromTree promise and once it resolves,
@@ -102,8 +102,8 @@ const prepareCreatedPages = async (routes, hashedFiles) => {
  * @param {*} route - a single route object created and returned by preparePrerender.
  * @param {*} hashedFiles - hashed assets created by parcel
  */
-const prepareStatic = (route, hashedFiles) => {
-  const markup = prepareHTML(route, hashedFiles);
+const prepareStatic = async (route, hashedFiles) => {
+  const markup = await prepareHTML(route, hashedFiles);
   // handling index path
   const file = route.path === "/" ? "/index" : route.path;
   return fs.writeFile(`./dist${file}.html`, markup);
@@ -115,13 +115,14 @@ const prepareStatic = (route, hashedFiles) => {
  * @param {*} hashedFiles - hashed assets created by parcel
  */
 const prepareHTML = (route, hashedFiles) => {
-  return HTML(
+  return markup.createHTML(
     route.markup,
     [
       utils.assignAsset(route.path, `${route.name}.js`, hashedFiles),
       utils.assignAsset(route.path, `hydrate.js`, hashedFiles),
     ],
-    route.initialState
+    route.initialState,
+    hashedFiles
   );
 };
 
