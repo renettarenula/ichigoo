@@ -5,7 +5,7 @@
 import "regenerator-runtime/runtime";
 import React from "react";
 import { hydrate } from "react-dom";
-import App from "./app.js";
+import App from "./App.js";
 import data from "./data.graphql.json";
 import { makeExecutableSchema } from "@graphql-tools/schema";
 import { typeDefs, resolvers } from "ichigoo/lib/graphql/SchemaInfo.js";
